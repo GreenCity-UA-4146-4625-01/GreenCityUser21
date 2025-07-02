@@ -19,7 +19,7 @@ env:
   dockerRepoName: skyere/greencityuser
 
   # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+  #workflow_dispatch:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -27,12 +27,13 @@ jobs:
     runs-on: ubuntu-latest
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - name: Set up JDK 11
-        uses: actions/setup-java@v1
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
         with:
-          java-version: 11
+          distribution: 'temurin'
+          java-version: 21
       
 #       - name: Set up Go
 #         uses: actions/setup-go@v3
@@ -42,10 +43,16 @@ jobs:
       - name: Run a multi-line script
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_USER }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          git fetch --unshallow
-          mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=ita-social-projects-green-city-user -Dsonar.organization=ita-social-projects -Dsonar.host.url=https://sonarcloud.io -Dsonar.sources='src/main/java/greencity' -Dsonar.binaries=target/classes -Dsonar.dynamicAnalysis=reuseReports
+          git fetch --unshallow || true
+          mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar \
+            -Dsonar.projectKey=ita-social-projects-green-city-user \
+            -Dsonar.organization=ita-social-projects \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.sources='src/main/java/greencity' \ 
+            -Dsonar.binaries=target/classes \
+            -Dsonar.dynamicAnalysis=reuseReports \
         # Checks-out your greencity.repository under $GITHUB_WORKSPACE, so your job can access it
       
       - name: Test Reporter
@@ -53,7 +60,7 @@ jobs:
         if: success() || failure()
         with:
           name: Tests Report
-          path: ${{ env.userRepoName }}/target/surefire-reports/*.xml
+          path: "**/target/surefire-reports/*.xml"
           reporter: java-junit
       
       - name: Rename user jar to app
