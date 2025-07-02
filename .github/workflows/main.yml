@@ -58,14 +58,14 @@ jobs:
       - name: Set short SHA for further steps
         run: echo "GITHUB_SHA_SHORT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
-      - name: Deploy 🚀
-        if: ${{ github.event_name == 'push' }}
-        uses: JamesIves/github-pages-deploy-action@3.7.1
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: .
-          CLEAN: true
+      # - name: Deploy 🚀
+      #   if: ${{ github.event_name == 'push' }}
+      #   uses: JamesIves/github-pages-deploy-action@3.7.1
+      #   with:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     BRANCH: gh-pages
+      #     FOLDER: .
+      #     CLEAN: true
 
 
 # name: CI/CD GreenCityUser
