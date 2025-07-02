@@ -97,11 +97,12 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
      *
      * @param ex      Exception which should be intercepted.
      * @param request contains details about occurred exception.
-     * @return ResponseEntity which contains http status 400 and message about wrong sort field.
+     * @return ResponseEntity which contains http status 400 and message about wrong
+     *         sort field.
      */
     @ExceptionHandler(PropertyReferenceException.class)
     public final ResponseEntity<Object> handlePropertyReferenceException(
-            PropertyReferenceException ex, WebRequest request) {
+        PropertyReferenceException ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
         String message = "Invalid sort property: '" + ex.getPropertyName() + "'";
         exceptionResponse.setMessage(message);
