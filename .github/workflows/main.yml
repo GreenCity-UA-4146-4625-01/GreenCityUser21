@@ -1,8 +1,5 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI/CD GreenCityUser
 # Controls when the action will run. 
-
 concurrency: Testing
 
 on:
@@ -11,6 +8,7 @@ on:
     branches: [ master, dev ]
   pull_request:
     branches: [ master, dev ]
+  workflow_dispatch:
 
 env:
   repository: user
@@ -18,8 +16,6 @@ env:
   onbootJarName: app.jar
   dockerRepoName: skyere/greencityuser
 
-  # Allows you to run this workflow manually from the Actions tab
-  #workflow_dispatch:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -37,11 +33,6 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 21
-      
-#       - name: Set up Go
-#         uses: actions/setup-go@v3
-#         with:
-#           go-version: 1.18
 
       - name: Run a multi-line script
         env:
@@ -49,13 +40,12 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           git fetch --unshallow || true
-          mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar \
+          mvn clean verify sonar:sonar \
             -Dsonar.projectKey=GreenCity-UA-4146-4625-01_GreenCityUser21 \
             -Dsonar.organization=greencity-ua-4146-4625-01 \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.sources='src/main/java/greencity' \ 
             -Dsonar.binaries=target/classes \
-            -Dsonar.dynamicAnalysis=reuseReports \
         # Checks-out your greencity.repository under $GITHUB_WORKSPACE, so your job can access it
       
       - name: Test Reporter
