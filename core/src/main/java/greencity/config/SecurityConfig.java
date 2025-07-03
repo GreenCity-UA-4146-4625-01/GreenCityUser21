@@ -133,7 +133,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, USER_LINK,
                     "/user/shopping-list-items/habits/{habitId}/shopping-list",
                     "/user/{userId}/{habitId}/custom-shopping-list-items/available",
-                    "/user/{userId}/profile/", "/user/isOnline/{userId}/",
+                    "/user/{userId}/profile/",
                     "/user/{userId}/profileStatistics/",
                     "/user/userAndSixFriendsWithOnlineStatus",
                     "/user/userAndAllFriendsWithOnlineStatus",
@@ -197,6 +197,9 @@ public class SecurityConfig {
                     "/user/searchBy",
                     "/user/findAll")
                 .hasAnyRole(ADMIN, MODERATOR, EMPLOYEE)
+                .requestMatchers(HttpMethod.GET,
+                            "/user/isOnline/{userId}/")
+                .hasAnyRole(ADMIN, MODERATOR)
                 .requestMatchers(HttpMethod.POST,
                     "/ownSecurity/sign-up-employee")
                 .hasAnyRole(UBS_EMPLOYEE)
