@@ -49,7 +49,6 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
     private final EmailService emailService;
-    private final GenericResponseService responseBuilder;
 
     /**
      * The method which update user status. Parameter principal are ignored because
