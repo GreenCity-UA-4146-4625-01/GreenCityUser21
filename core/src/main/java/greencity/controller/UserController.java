@@ -416,10 +416,9 @@ public class UserController {
     @GetMapping("/findByEmail")
     public ResponseEntity<UserVO> findByEmail(@RequestParam String email) {
         UserVO userVO = userService.findByEmail(email);
-        if(userVO == null){
+        if (userVO == null) {
             throw new NotFoundException(NotFoundException.class.getName());
         }
-
         return ResponseEntity.ok(userVO);
     }
 
