@@ -26,6 +26,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.service.GenericResponseService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -48,6 +49,7 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
     private final EmailService emailService;
+    private final GenericResponseService responseBuilder;
 
     /**
      * The method which update user status. Parameter principal are ignored because
@@ -481,7 +483,10 @@ public class UserController {
      * @author Orest Mamchuk
      */
     @Operation(summary = "update via UserManagement")
-    @ApiResponses(value = @ApiResponse(responseCode = "401", description = HttpStatuses.UNAUTHORIZED))
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "401", description = HttpStatuses.UNAUTHORIZED),
+            @ApiResponse(responseCode = "404", description = HttpStatuses.NOT_FOUND)
+    })
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void updateUserManagement(
