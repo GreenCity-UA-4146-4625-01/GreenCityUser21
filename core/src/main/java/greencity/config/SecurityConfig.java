@@ -23,8 +23,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+
 import java.util.Arrays;
 import java.util.Collections;
+
 import static greencity.constant.AppConstant.*;
 import static jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
@@ -73,19 +75,19 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
-            CorsConfiguration config = new CorsConfiguration();
-            config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-            config.setAllowedOrigins(Collections.singletonList("http://localhost:4205"));
-            config.setAllowedMethods(
-                    Arrays.asList("GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH"));
-            config.setAllowedHeaders(
-                    Arrays.asList("Access-Control-Allow-Origin", "Access-Control-Allow-Headers",
-                            "X-Requested-With", "Origin", "Content-Type", "Accept", "Authorization"));
-            config.setAllowCredentials(true);
-            config.setAllowedHeaders(Collections.singletonList("*"));
-            config.setMaxAge(3600L);
-            return config;
-        }))
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+                    config.setAllowedOrigins(Collections.singletonList("http://localhost:4205"));
+                    config.setAllowedMethods(
+                            Arrays.asList("GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH"));
+                    config.setAllowedHeaders(
+                            Arrays.asList("Access-Control-Allow-Origin", "Access-Control-Allow-Headers",
+                                    "X-Requested-With", "Origin", "Content-Type", "Accept", "Authorization"));
+                    config.setAllowCredentials(true);
+                    config.setAllowedHeaders(Collections.singletonList("*"));
+                    config.setMaxAge(3600L);
+                    return config;
+                }))
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .addFilterBefore(
@@ -99,6 +101,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req -> req
                         .requestMatchers("/static/css/**", "/static/img/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/error").permitAll()
                         .requestMatchers(
                                 "/v2/api-docs/**",
                                 "/v3/api-docs/**",
@@ -133,7 +136,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, USER_LINK,
                                 "/user/shopping-list-items/habits/{habitId}/shopping-list",
                                 "/user/{userId}/{habitId}/custom-shopping-list-items/available",
-                                "/user/{userId}/profile/", "/user/isOnline/{userId}/",
+                                "/user/{userId}/profile/",
                                 "/user/{userId}/profileStatistics/",
                                 "/user/userAndSixFriendsWithOnlineStatus",
                                 "/user/userAndAllFriendsWithOnlineStatus",
@@ -197,6 +200,9 @@ public class SecurityConfig {
                                 "/user/searchBy",
                                 "/user/findAll")
                         .hasAnyRole(ADMIN, MODERATOR, EMPLOYEE)
+                        .requestMatchers(HttpMethod.GET,
+                                "/user/isOnline/{userId}/")
+                        .hasAnyRole(ADMIN, MODERATOR)
                         .requestMatchers(HttpMethod.POST,
                                 "/ownSecurity/sign-up-employee")
                         .hasAnyRole(UBS_EMPLOYEE)
