@@ -12,6 +12,7 @@ import greencity.dto.place.PlaceNotificationDto;
 import greencity.dto.user.PlaceAuthorDto;
 import greencity.dto.user.UserActivationDto;
 import greencity.dto.user.UserDeactivationReasonDto;
+import greencity.dto.user.UserVO;
 import greencity.dto.violation.UserViolationMailDto;
 import greencity.entity.User;
 import greencity.exception.exceptions.NotFoundException;
