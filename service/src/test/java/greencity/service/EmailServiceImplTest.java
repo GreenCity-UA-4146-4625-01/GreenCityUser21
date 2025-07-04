@@ -87,6 +87,8 @@ class EmailServiceImplTest {
         PlaceAuthorDto placeAuthorDto = new PlaceAuthorDto();
         placeAuthorDto.setEmail("test@gmail.com");
         dto.setAuthor(placeAuthorDto);
+        User user = User.builder().email("test@gmail.com").build();
+        when(userRepo.findByEmail("test@gmail.com")).thenReturn(Optional.of(user));
         service.sendCreatedNewsForAuthor(dto);
         verify(javaMailSender).createMimeMessage();
     }
