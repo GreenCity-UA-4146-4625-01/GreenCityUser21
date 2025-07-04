@@ -48,7 +48,6 @@ public class SecurityConfig {
     /**
      * Constructor.
      */
-
     @Autowired
     public SecurityConfig(JwtTool jwtTool, UserService userService,
         AuthenticationConfiguration authenticationConfiguration) {
@@ -99,6 +98,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(req -> req
                 .requestMatchers("/static/css/**", "/static/img/**").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers("/error").permitAll()
                 .requestMatchers(
                     "/v2/api-docs/**",
                     "/v3/api-docs/**",
