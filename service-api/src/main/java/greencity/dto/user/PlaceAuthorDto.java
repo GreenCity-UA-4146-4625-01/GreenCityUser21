@@ -1,7 +1,6 @@
 package greencity.dto.user;
 
 import java.io.Serializable;
-
 import greencity.constant.ValidationConstants;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
