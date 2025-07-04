@@ -69,7 +69,7 @@ jobs:
 
 
 # name: CI/CD GreenCityUser
-# # Controls when the action will run. 
+# # Controls when the action will run.
 # concurrency: Testing
 
 # on:
@@ -125,7 +125,7 @@ jobs:
 #           name: Tests Report
 #           path: "**/target/surefire-reports/*.xml"
 #           reporter: java-junit
-      
+
 #       - name: Rename user jar to app
 #         run: mv $userRepoName/target/*.jar $userRepoName/target/$onbootJarName
 
@@ -145,20 +145,20 @@ jobs:
 #           file: Dockerfile
 #           push: true
 #           tags: ${{ env.dockerRepoName }}:test-${{ env.GITHUB_SHA_SHORT }}
-      
+
 # #       - name: Kubernetes Set Context
 # #         uses: Azure/k8s-set-context@v3.0
 # #         with:
 # #           kubeconfig: ${{ secrets.KUBE_CONFIG }}
-      
+
 # #       - name: Set up Postgres
 # #         run: kubectl scale deploy postgres --replicas=1 -n test
-      
+
 # #       - name: Kubernetes tests
 # #         run: |
 # #           cd chart-test
 # #           go test -v ./...
-      
+
 # #       - name: Post Set up Postgres
 # #         if: success() || failure()
 # #         run: kubectl scale deploy postgres --replicas=0 -n test
@@ -170,4 +170,4 @@ jobs:
 #           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #           BRANCH: gh-pages
 #           FOLDER: .
-#           CLEAN: true 
+#           CLEAN: true
