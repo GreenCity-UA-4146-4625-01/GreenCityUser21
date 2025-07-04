@@ -4,6 +4,7 @@ import greencity.annotations.ApiPageable;
 import greencity.annotations.CurrentUser;
 import greencity.annotations.CurrentUserId;
 import greencity.annotations.ImageValidation;
+import greencity.constant.ErrorMessage;
 import greencity.constant.HttpStatuses;
 import greencity.dto.PageableAdvancedDto;
 import greencity.dto.PageableDto;
@@ -417,7 +418,7 @@ public class UserController {
     public ResponseEntity<UserVO> findByEmail(@RequestParam String email) {
         UserVO userVO = userService.findByEmail(email);
         if (userVO == null) {
-            throw new NotFoundException(NotFoundException.class.getName());
+            throw new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_EMAIL);
         }
         return ResponseEntity.ok(userVO);
     }
