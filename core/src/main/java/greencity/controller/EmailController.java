@@ -4,6 +4,7 @@ import greencity.constant.HttpStatuses;
 import greencity.dto.econews.EcoNewsForSendEmailDto;
 import greencity.dto.notification.NotificationDto;
 import greencity.dto.violation.UserViolationMailDto;
+import greencity.exception.exceptions.WrongEmailException;
 import greencity.message.SendChangePlaceStatusEmailMessage;
 import greencity.message.SendHabitNotification;
 import greencity.message.SendReportEmailMessage;
@@ -85,9 +86,13 @@ public class EmailController {
      * @author Zakhar Veremchuk
      */
     @PostMapping("/sendUserViolation")
-    public ResponseEntity<Object> sendUserViolation(@RequestBody UserViolationMailDto dto) {
-        emailService.sendUserViolationEmail(dto);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<Object> sendUserViolation(@RequestBody @Valid UserViolationMailDto dto) {
+        try {
+            emailService.sendUserViolationEmail(dto);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (WrongEmailException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     /**

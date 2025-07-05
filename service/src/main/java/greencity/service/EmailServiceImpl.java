@@ -15,6 +15,7 @@ import greencity.dto.user.UserDeactivationReasonDto;
 import greencity.dto.violation.UserViolationMailDto;
 import greencity.entity.User;
 import greencity.exception.exceptions.NotFoundException;
+import greencity.exception.exceptions.WrongEmailException;
 import greencity.repository.UserRepo;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -276,6 +277,9 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendUserViolationEmail(UserViolationMailDto dto) {
+        if (!isValidEmail(dto.getEmail())) {
+            throw new WrongEmailException("Email not found or invalid: " + dto.getEmail());
+        }
         Map<String, Object> model = new HashMap<>();
         model.put(EmailConstants.CLIENT_LINK, clientLink);
         model.put(EmailConstants.USER_NAME, dto.getName());
@@ -305,5 +309,9 @@ public class EmailServiceImpl implements EmailService {
         model.put(EmailConstants.IS_UBS, isUbs);
         String template = createEmailTemplate(model, EmailConstants.SUCCESS_RESTORED_PASSWORD_PAGE);
         sendEmail(email, EmailConstants.RESTORED_PASSWORD, template);
+    }
+    private boolean isValidEmail(String email) {
+        String regex = "^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$";
+        return email != null && email.matches(regex);
     }
 }
