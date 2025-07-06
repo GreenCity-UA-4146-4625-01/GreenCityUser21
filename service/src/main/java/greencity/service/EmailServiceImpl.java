@@ -15,6 +15,7 @@ import greencity.dto.user.UserDeactivationReasonDto;
 import greencity.dto.violation.UserViolationMailDto;
 import greencity.entity.User;
 import greencity.exception.exceptions.NotFoundException;
+import greencity.exception.exceptions.WrongEmailException;
 import greencity.repository.UserRepo;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -79,9 +80,9 @@ public class EmailServiceImpl implements EmailService {
     public void sendChangePlaceStatusEmail(String authorName, String placeName,
         String placeStatus, String authorEmail) {
         User user = userRepo.findByEmail(authorEmail)
-                .orElseThrow(() -> new EntityNotFoundException("User with email " + authorEmail + " not found"));
+                .orElseThrow(() -> new WrongEmailException("User with email " + authorEmail + " not found"));
         if (!user.getName().equals(authorName)) {
-            throw new EntityNotFoundException("User name does not match the email");
+            throw new NotFoundException("User name does not match the email");
         }
         log.info(LogMessage.IN_SEND_CHANGE_PLACE_STATUS_EMAIL, placeName);
         Map<String, Object> model = new HashMap<>();
