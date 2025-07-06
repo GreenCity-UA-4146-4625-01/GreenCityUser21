@@ -18,6 +18,7 @@ import greencity.exception.exceptions.NotFoundException;
 import greencity.repository.UserRepo;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -77,6 +78,11 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendChangePlaceStatusEmail(String authorName, String placeName,
         String placeStatus, String authorEmail) {
+        User user = userRepo.findByEmail(authorEmail)
+                .orElseThrow(() -> new EntityNotFoundException("User with email " + authorEmail + " not found"));
+        if (!user.getName().equals(authorName)) {
+            throw new EntityNotFoundException("User name does not match the email");
+        }
         log.info(LogMessage.IN_SEND_CHANGE_PLACE_STATUS_EMAIL, placeName);
         Map<String, Object> model = new HashMap<>();
         model.put(EmailConstants.CLIENT_LINK, clientLink);
