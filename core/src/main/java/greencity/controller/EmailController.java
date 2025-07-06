@@ -9,6 +9,7 @@ import greencity.message.SendHabitNotification;
 import greencity.message.SendReportEmailMessage;
 import greencity.service.EmailService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -16,6 +17,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -71,6 +73,14 @@ public class EmailController {
      *                              email
      * @author Taras Kavkalo
      */
+    @Operation(summary = "Send email notification about unmarked habits",
+    description = "Sends email to the user if they haven't marked any habits during the 3 days."
+    + "Only accessible to users with ROLE_ADMIN.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Notification email sent successfully"),
+            @ApiResponse(responseCode = "403", description = "Forbidden. Only admins can access this endpoint")
+    })
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping("/sendHabitNotification")
     public ResponseEntity<Object> sendHabitNotification(@RequestBody SendHabitNotification sendHabitNotification) {
         emailService.sendHabitNotification(sendHabitNotification.getName(), sendHabitNotification.getEmail());
