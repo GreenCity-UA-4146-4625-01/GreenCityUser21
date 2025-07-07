@@ -63,6 +63,11 @@ class EmailServiceImplTest {
         String placeName = "test place name";
         String placeStatus = "test place status";
         String authorEmail = "test author email";
+
+        User user = new User();
+        user.setEmail(authorEmail);
+        user.setName(authorFirstName);
+        when(userRepo.findByEmail(authorEmail)).thenReturn(Optional.of(user));
         service.sendChangePlaceStatusEmail(authorFirstName, placeName, placeStatus, authorEmail);
         verify(javaMailSender).createMimeMessage();
     }
