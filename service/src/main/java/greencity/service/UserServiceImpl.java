@@ -589,7 +589,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserProfileStatisticsDto getUserProfileStatistics(Long userId,  Long currentUserId) {
-        if (!userId.equals(currentUserId)) {
+        if (!Objects.equals(userId, currentUserId)) {
             throw new UserNotOwnerException(ErrorMessage.USER_NOT_OWNER);
         }
         Long amountOfPublishedNewsByUserId = restClient.findAmountOfPublishedNews(userId);

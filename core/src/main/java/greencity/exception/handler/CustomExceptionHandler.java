@@ -391,7 +391,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
-     * Exception handler for BadUpdateRequestException.
+     * Exception handler for UserNotOwnerException.
      *
      * @param ex which is being intercepted
      * @return ResponseEntity which contains details about exception and 403 status

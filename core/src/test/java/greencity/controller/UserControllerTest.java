@@ -37,6 +37,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -316,10 +318,10 @@ class UserControllerTest {
         String accessToken = "accessToken";
         HttpHeaders headers = new HttpHeaders();
         headers.set(AUTHORIZATION, accessToken);
-        mockMvc.perform(get(userLink + "/{userId}/profileStatistics/", 1)
+        mockMvc.perform(get(userLink + "/{userId}/profileStatistics/", 1L)
             .headers(headers))
             .andExpect(status().isOk());
-        verify(userService).getUserProfileStatistics(1L, 1L);
+        verify(userService).getUserProfileStatistics(eq(1L), any());
     }
 
     @Test

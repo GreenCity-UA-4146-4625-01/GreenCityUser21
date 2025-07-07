@@ -1,6 +1,7 @@
 package greencity.converters;
 
 import greencity.annotations.CurrentUserId;
+import greencity.dto.user.UserVO;
 import greencity.service.UserService;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -34,9 +35,9 @@ public class UserIdResolver implements HandlerMethodArgumentResolver {
     /**
      * Resolves the ID of the currently authenticated user from the security context.
      *
-     * @param parameter method parameter
-     * @param mavContainer the ModelAndViewContainer
-     * @param webRequest the current web request
+     * @param parameter     method parameter
+     * @param mavContainer  the ModelAndViewContainer
+     * @param webRequest    the current web request
      * @param binderFactory the factory to create WebDataBinder instances
      * @return the ID of the currently authenticated user or null if unauthenticated
      */
@@ -45,6 +46,14 @@ public class UserIdResolver implements HandlerMethodArgumentResolver {
     public Object resolveArgument(@NotNull MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         Principal principal = webRequest.getUserPrincipal();
-        return principal != null ? userService.findByEmail(principal.getName()).getId() : null;
+        if (principal == null) {
+            return null;
+        }
+
+        UserVO user = userService.findByEmail(principal.getName());
+        if (user == null) {
+            throw new SecurityException("Authenticated user not found in database");
+        }
+        return user.getId();
     }
 }
