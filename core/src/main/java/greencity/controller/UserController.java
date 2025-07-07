@@ -396,9 +396,10 @@ public class UserController {
     })
     @GetMapping("/{userId}/profileStatistics/")
     public ResponseEntity<UserProfileStatisticsDto> getUserProfileStatistics(
-        @Parameter(description = "Id of current user. Cannot be empty.") @PathVariable @CurrentUserId Long userId) {
+        @Parameter(description = "Id of current user. Cannot be empty.") @PathVariable Long userId,
+        @CurrentUserId Long currentUserId) {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(userService.getUserProfileStatistics(userId));
+            .body(userService.getUserProfileStatistics(userId, currentUserId));
     }
 
     /**

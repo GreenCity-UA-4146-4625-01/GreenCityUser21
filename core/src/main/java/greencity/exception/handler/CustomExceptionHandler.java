@@ -1,21 +1,7 @@
 package greencity.exception.handler;
 
 import greencity.constant.AppConstant;
-import greencity.exception.exceptions.BadRefreshTokenException;
-import greencity.exception.exceptions.BadRequestException;
-import greencity.exception.exceptions.BadSocialNetworkLinksException;
-import greencity.exception.exceptions.BadUpdateRequestException;
-import greencity.exception.exceptions.BadUserStatusException;
-import greencity.exception.exceptions.BadVerifyEmailTokenException;
-import greencity.exception.exceptions.EmailNotVerified;
-import greencity.exception.exceptions.InvalidURLException;
-import greencity.exception.exceptions.NotFoundException;
-import greencity.exception.exceptions.PasswordsDoNotMatchesException;
-import greencity.exception.exceptions.UserAlreadyHasPasswordException;
-import greencity.exception.exceptions.UserAlreadyRegisteredException;
-import greencity.exception.exceptions.WrongEmailException;
-import greencity.exception.exceptions.WrongIdException;
-import greencity.exception.exceptions.WrongPasswordException;
+import greencity.exception.exceptions.*;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import java.util.Collections;
@@ -402,5 +388,19 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exceptionResponse);
+    }
+
+    /**
+     * Exception handler for BadUpdateRequestException.
+     *
+     * @param ex which is being intercepted
+     * @return ResponseEntity which contains details about exception and 403 status
+     *         code
+     */
+
+    @ExceptionHandler(UserNotOwnerException.class)
+    public final ResponseEntity<Object> handleUserNotOwnerException(UserNotOwnerException ex) {
+        log.error(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
 }
