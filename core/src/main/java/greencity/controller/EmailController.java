@@ -4,16 +4,17 @@ import greencity.constant.HttpStatuses;
 import greencity.dto.econews.EcoNewsForSendEmailDto;
 import greencity.dto.notification.NotificationDto;
 import greencity.dto.violation.UserViolationMailDto;
+import greencity.exception.exceptions.WrongEmailException;
 import greencity.message.SendChangePlaceStatusEmailMessage;
 import greencity.message.SendHabitNotification;
 import greencity.message.SendReportEmailMessage;
 import greencity.service.EmailService;
+import greencity.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +23,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/email")
 @AllArgsConstructor
 public class EmailController {
-    @Autowired
     private final EmailService emailService;
+
+    private final UserService userService;
 
     /**
      * Method for sending news for users who subscribed for updates.
@@ -47,7 +49,7 @@ public class EmailController {
     @PostMapping("/sendReport")
     public ResponseEntity<Object> sendReport(@RequestBody SendReportEmailMessage message) {
         emailService.sendAddedNewPlacesReportEmail(message.getSubscribers(), message.getCategoriesDtoWithPlacesDtoMap(),
-            message.getEmailNotification());
+                message.getEmailNotification());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -60,7 +62,7 @@ public class EmailController {
     @PostMapping("/changePlaceStatus")
     public ResponseEntity<Object> changePlaceStatus(@RequestBody SendChangePlaceStatusEmailMessage message) {
         emailService.sendChangePlaceStatusEmail(message.getAuthorFirstName(), message.getPlaceName(),
-            message.getPlaceStatus(), message.getAuthorEmail());
+                message.getPlaceStatus(), message.getAuthorEmail());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -73,7 +75,11 @@ public class EmailController {
      */
     @PostMapping("/sendHabitNotification")
     public ResponseEntity<Object> sendHabitNotification(@RequestBody SendHabitNotification sendHabitNotification) {
-        emailService.sendHabitNotification(sendHabitNotification.getName(), sendHabitNotification.getEmail());
+        try {
+            emailService.sendHabitNotification(sendHabitNotification.getName(), sendHabitNotification.getEmail());
+        } catch (WrongEmailException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -100,14 +106,14 @@ public class EmailController {
      */
     @Operation(summary = "Send notification to user via email")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = HttpStatuses.OK),
-        @ApiResponse(responseCode = "400", description = HttpStatuses.BAD_REQUEST),
-        @ApiResponse(responseCode = "401", description = HttpStatuses.UNAUTHORIZED),
-        @ApiResponse(responseCode = "403", description = HttpStatuses.FORBIDDEN)
+            @ApiResponse(responseCode = "200", description = HttpStatuses.OK),
+            @ApiResponse(responseCode = "400", description = HttpStatuses.BAD_REQUEST),
+            @ApiResponse(responseCode = "401", description = HttpStatuses.UNAUTHORIZED),
+            @ApiResponse(responseCode = "403", description = HttpStatuses.FORBIDDEN)
     })
     @PostMapping("/notification")
     public ResponseEntity<Object> sendUserNotification(@RequestBody NotificationDto notification,
-        @RequestParam("email") String email) {
+                                                       @RequestParam("email") String email) {
         emailService.sendNotificationByEmail(notification, email);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
