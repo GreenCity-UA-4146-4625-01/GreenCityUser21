@@ -9,7 +9,6 @@ import greencity.message.SendChangePlaceStatusEmailMessage;
 import greencity.message.SendHabitNotification;
 import greencity.message.SendReportEmailMessage;
 import greencity.service.EmailService;
-import greencity.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -24,8 +23,6 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class EmailController {
     private final EmailService emailService;
-
-    private final UserService userService;
 
     /**
      * Method for sending news for users who subscribed for updates.
