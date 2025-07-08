@@ -12,6 +12,7 @@ import greencity.dto.place.PlaceNotificationDto;
 import greencity.dto.user.PlaceAuthorDto;
 import greencity.dto.user.UserActivationDto;
 import greencity.dto.user.UserDeactivationReasonDto;
+import greencity.dto.user.UserVO;
 import greencity.dto.violation.UserViolationMailDto;
 import greencity.entity.User;
 import greencity.exception.exceptions.NotFoundException;
@@ -31,10 +32,7 @@ import org.thymeleaf.context.Context;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Executor;
 
 /**
@@ -254,9 +252,14 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendHabitNotification(String name, String email) {
-        String subject = "Notification about not marked habits";
-        String content = "Dear " + name + ", you haven't marked any habit during last 3 days";
-        sendEmail(email, subject, content);
+        Optional<User> userVO = userRepo.findByEmail(email);
+        if (userVO.isPresent()) {
+            String subject = "Notification about not marked habits";
+            String content = "Dear " + name + ", you haven't marked any habit during last 3 days";
+            sendEmail(email, subject, content);
+        } else {
+            throw new WrongEmailException(ErrorMessage.USER_NOT_FOUND_BY_EMAIL);
+        }
     }
 
     @Override
