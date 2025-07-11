@@ -30,6 +30,7 @@ import java.util.Optional;
 @Slf4j
 public class AccessTokenAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTool jwtTool;
+    private final AuthenticationManager authenticationManager;
     private final UserService userService;
 
     /**
