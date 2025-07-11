@@ -9,15 +9,17 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Class that provide Authentication object based on JWT.
@@ -28,7 +30,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Slf4j
 public class AccessTokenAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTool jwtTool;
-    private final AuthenticationManager authenticationManager;
     private final UserService userService;
 
     /**
@@ -76,13 +77,20 @@ public class AccessTokenAuthenticationFilter extends OncePerRequestFilter {
 
         if (token != null) {
             try {
-                Authentication authentication = authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(token, ""));
-                Optional<UserVO> user = userService.findNotDeactivatedByEmail((String) authentication.getPrincipal());
-                log.info("user {}", user);
-                if (user.isPresent()) {
-                    log.debug("User successfully authenticate - {}", authentication.getPrincipal());
+                String email = jwtTool.getEmailOutOfAccessToken(token);
+                Optional<UserVO> userOptional = userService.findNotDeactivatedByEmail(email);
+                if (userOptional.isPresent()) {
+                    UserVO user = userOptional.get();
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    user,
+                                    null,
+                                    List.of(new SimpleGrantedAuthority(user.getRole().toString()))
+                            );
                     SecurityContextHolder.getContext().setAuthentication(authentication);
+                    log.info("User successfully authenticated - {}, {}", user.getEmail(), user.getRole());
+                } else {
+                    log.info("User with email {} not found or deactivated", email);
                 }
             } catch (ExpiredJwtException e) {
                 log.info("Token has expired: " + token);

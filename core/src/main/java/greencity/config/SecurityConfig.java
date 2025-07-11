@@ -23,8 +23,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+
 import java.util.Arrays;
 import java.util.Collections;
+
 import static greencity.constant.AppConstant.*;
 import static jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
@@ -192,6 +194,7 @@ public class SecurityConfig {
                                 "/user/shopping-list-items")
                         .hasAnyRole(USER, ADMIN, UBS_EMPLOYEE, MODERATOR, EMPLOYEE)
                         .requestMatchers(HttpMethod.GET,
+                                USER_LINK,
                                 "/user/all",
                                 "/user/roles",
                                 "/user/findUserForManagement",
@@ -227,7 +230,7 @@ public class SecurityConfig {
     }
 
     /**
-     * Method for configure type of authentication provider.
+     * Method for configure a type of authentication provider.
      *
      * @param auth {@link AuthenticationManagerBuilder}
      */

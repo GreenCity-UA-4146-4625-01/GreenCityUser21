@@ -51,7 +51,6 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
     private final EmailService emailService;
-
     /**
      * The method which update user status. Parameter principal are ignored because
      * Spring automatically provide the Principal object.
@@ -212,12 +211,9 @@ public class UserController {
         @ApiResponse(responseCode = "403", description = HttpStatuses.FORBIDDEN)
     })
     @GetMapping
-    public ResponseEntity<UserUpdateDto> getUserByPrincipal(@ApiIgnore Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new org.springframework.security.access.AccessDeniedException("No authenticated user");
-        }
-        String email = authentication.getName();
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserUpdateDtoByEmail(email));
+    public ResponseEntity<UserUpdateDto> getUserByPrincipal(@ApiIgnore @AuthenticationPrincipal UserVO user) {
+        log.info("User: {}", user);
+        return ResponseEntity.ok(userService.getUserUpdateDtoByEmail(user.getEmail()));
     }
 
     /**

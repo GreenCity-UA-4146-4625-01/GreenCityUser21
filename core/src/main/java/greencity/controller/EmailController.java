@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/email")
 @AllArgsConstructor
 public class EmailController {
-    @Autowired
+
     private final EmailService emailService;
 
     /**
@@ -38,7 +37,7 @@ public class EmailController {
     }
 
     /**
-     * Method for sending notification to userss who subscribed for updates about
+     * Method for sending notification to users who subscribed for updates about
      * added new places.
      *
      * @param message - object with all necessary data for sending email
@@ -91,7 +90,7 @@ public class EmailController {
     }
 
     /**
-     * Sends notification to user on email.
+     * Sends notification to user email.
      *
      * @param notification {@link NotificationDto} - object with all necessary data
      *                     for sending notification via email.
