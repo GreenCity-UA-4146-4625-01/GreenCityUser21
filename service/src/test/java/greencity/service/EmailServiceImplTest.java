@@ -63,6 +63,11 @@ class EmailServiceImplTest {
         String placeName = "test place name";
         String placeStatus = "test place status";
         String authorEmail = "test author email";
+
+        User user = new User();
+        user.setEmail(authorEmail);
+        user.setName(authorFirstName);
+        when(userRepo.findByEmail(authorEmail)).thenReturn(Optional.of(user));
         service.sendChangePlaceStatusEmail(authorFirstName, placeName, placeStatus, authorEmail);
         verify(javaMailSender).createMimeMessage();
     }
@@ -87,6 +92,8 @@ class EmailServiceImplTest {
         PlaceAuthorDto placeAuthorDto = new PlaceAuthorDto();
         placeAuthorDto.setEmail("test@gmail.com");
         dto.setAuthor(placeAuthorDto);
+        User user = User.builder().email("test@gmail.com").build();
+        when(userRepo.findByEmail("test@gmail.com")).thenReturn(Optional.of(user));
         service.sendCreatedNewsForAuthor(dto);
         verify(javaMailSender).createMimeMessage();
     }

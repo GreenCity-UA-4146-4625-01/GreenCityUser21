@@ -28,6 +28,7 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -88,6 +89,24 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         WebRequest request) {
         log.info(ex.getMessage());
         ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
+    }
+
+    /**
+     * Method intercept exception {@link PropertyReferenceException}.
+     *
+     * @param ex      Exception which should be intercepted.
+     * @param request contains details about occurred exception.
+     * @return ResponseEntity which contains http status 400 and message about wrong
+     *         sort field.
+     */
+    @ExceptionHandler(PropertyReferenceException.class)
+    public final ResponseEntity<Object> handlePropertyReferenceException(
+        PropertyReferenceException ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        String message = "Invalid sort property: '" + ex.getPropertyName() + "'";
+        exceptionResponse.setMessage(message);
+        log.trace(ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
 
