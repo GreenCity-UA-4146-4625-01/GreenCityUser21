@@ -588,7 +588,10 @@ public class UserServiceImpl implements UserService {
      * @author Marian Datsko
      */
     @Override
-    public UserProfileStatisticsDto getUserProfileStatistics(Long userId) {
+    public UserProfileStatisticsDto getUserProfileStatistics(Long userId,  Long currentUserId) {
+        if (!Objects.equals(userId, currentUserId)) {
+            throw new UserNotOwnerException(ErrorMessage.USER_NOT_OWNER);
+        }
         Long amountOfPublishedNewsByUserId = restClient.findAmountOfPublishedNews(userId);
         Long amountOfAcquiredHabitsByUserId = restClient.findAmountOfAcquiredHabits(userId);
         Long amountOfHabitsInProgressByUserId = restClient.findAmountOfHabitsInProgress(userId);
