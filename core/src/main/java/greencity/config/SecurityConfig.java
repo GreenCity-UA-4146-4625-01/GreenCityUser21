@@ -7,6 +7,7 @@ import greencity.security.filters.AccessTokenAuthenticationFilter;
 import greencity.security.jwt.JwtTool;
 import greencity.security.providers.JwtAuthenticationProvider;
 import greencity.service.UserService;
+import jakarta.servlet.DispatcherType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -99,7 +100,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req -> req
                         .requestMatchers("/static/css/**", "/static/img/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/error").permitAll()
+                        .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers(
                                 "/v2/api-docs/**",
                                 "/v3/api-docs/**",
@@ -152,7 +153,7 @@ public class SecurityConfig {
                                 "/user/{userId}/sixUserFriends/",
                                 "/ownSecurity/password-status",
                                 "/user/emailNotifications")
-                        .hasAnyRole(USER, ADMIN, UBS_EMPLOYEE, MODERATOR, EMPLOYEE)
+                        .hasAnyRole(ADMIN, UBS_EMPLOYEE, MODERATOR, EMPLOYEE)
                         .requestMatchers(HttpMethod.POST, USER_LINK,
                                 "/user/shopping-list-items",
                                 "/user/{userId}/habit",

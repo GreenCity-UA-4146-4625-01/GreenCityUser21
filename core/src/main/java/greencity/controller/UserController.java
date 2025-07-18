@@ -211,9 +211,8 @@ public class UserController {
         @ApiResponse(responseCode = "403", description = HttpStatuses.FORBIDDEN)
     })
     @GetMapping
-    public ResponseEntity<UserUpdateDto> getUserByPrincipal(@ApiIgnore @AuthenticationPrincipal Principal principal) {
-        String email = principal.getName();
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserUpdateDtoByEmail(email));
+    public ResponseEntity<UserUpdateDto> getUserByPrincipal(@AuthenticationPrincipal String principal) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserUpdateDtoByEmail(principal));
     }
 
     /**
@@ -489,8 +488,9 @@ public class UserController {
      */
     @Operation(summary = "update via UserManagement")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "401", description = HttpStatuses.UNAUTHORIZED),
-        @ApiResponse(responseCode = "404", description = HttpStatuses.NOT_FOUND)
+            @ApiResponse(responseCode = "200", description = HttpStatuses.OK),
+            @ApiResponse(responseCode = "401", description = HttpStatuses.UNAUTHORIZED),
+            @ApiResponse(responseCode = "403", description = HttpStatuses.FORBIDDEN)
     })
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
