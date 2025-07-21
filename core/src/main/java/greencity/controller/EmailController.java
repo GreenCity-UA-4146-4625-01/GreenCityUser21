@@ -88,9 +88,13 @@ public class EmailController {
      * @author Zakhar Veremchuk
      */
     @PostMapping("/sendUserViolation")
-    public ResponseEntity<Object> sendUserViolation(@RequestBody UserViolationMailDto dto) {
-        emailService.sendUserViolationEmail(dto);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<Object> sendUserViolation(@RequestBody @Valid UserViolationMailDto dto) {
+        try {
+            emailService.sendUserViolationEmail(dto);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (WrongEmailException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     /**
